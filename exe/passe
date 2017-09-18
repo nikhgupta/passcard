@@ -1,0 +1,87 @@
+#!/usr/bin/env ruby
+
+require "optparse"
+require "passe"
+require "passe/cli"
+
+version = "Passe v#{Passe::VERSION} - Generate password grids with ease."
+
+def charspace(width, padding)
+  chars = Passe::CS_ALNUMSYM.chars
+  padding = "\n" + " " * padding
+  padding + chars.each_slice(width).map(&:join).join(padding)
+end
+
+usage   = <<-USAGE
+#{version}
+#{"-" * version.length}
+Usage: passe [options] <secretkey>
+
+Passe generates a password grid/card of variable sizes for you from a given
+key phrase. Specifying the same phrase would generate the same grid.
+
+Examples:
+
+  passe secretword
+  # => (Default behaviour) Generates a grid of:
+       - size 26x26
+       - with symbols
+       - with number rows for PINs etc.
+       - with row and column headers with characters A-Z.
+       - with algorithms: #{Passe::ALGORITHMS.join(", ").downcase}
+       - with character space as: #{charspace(40, 11)}
+
+You can customize generation of the grid by passing the following options.
+Note that, specifying any non-default behaviour here will require you to pass
+the same options in future to re-generate the password grid.
+
+    -r, --rows=STRING             Use chars in the given STRING
+                                  for generating Row headers.
+
+    -c, --cols=STRING             Use chars in the given STRING
+                                  for generating Column headers.
+
+    -s, --size=ROWSxCOLS          Generate Passe grid of given size.
+
+    -a, --algorithms=STRING       Comma-separated list of algorithms to use.
+                                  Algorithms are used cyclically to add a
+                                  degree of randomness? Have a look at the
+                                  source code for better understanding.
+                                  Available algorithms:
+                                  md5, sha1, sha256, sha384, sha512
+
+    --[no-]symbols                Use symbols in the generated Passe grid?
+                                  [Default: true]
+
+    --[no-]numrows                Generate few number-only rows/cols for PINs,
+                                  etc. [Default: true, if any dimension > 10]
+
+    --charspace=STRING            Use the given characters for generating the
+                                  Passe grid. Default is: #{charspace(40, 36)}
+
+If you prefer to customize the grid generation, it is advisable to create an
+alias for the same in your dotfiles, so that you can reference it later, easily.
+
+  alias passe="passe --charspace=abcdefghijklmnopqrstuvwxyz1234567890 --no-numrows"
+
+USAGE
+
+options = {}
+OptionParser.new do |opts|
+  opts.banner = usage
+
+  opts.on("-c", "--config=FILE"){|v| options[:config] = v}
+  opts.on("-s", "--style=NAME"){|v| options[:style] = v}
+  opts.on("--size=ROWSxCOLS"){|v| options[:size] = v}
+  opts.on("--rows=STRING"){|v| options[:rows] = v}
+  opts.on("--cols=STRING"){|v| options[:cols] = v}
+  opts.on("--algorithms=STRING"){|v| options[:algorithms] = v}
+  opts.on("--charspace=STRING"){ |v| options[:charspace] = v }
+  opts.on("--[no-]symbols"){ |v| options[:symbols] = v }
+  opts.on("--[no-]numrows"){ |v| options[:numrows] = v }
+
+  opts.on("-v", "--version"){ puts version; exit }
+  opts.on("-h", "--help") { puts usage; exit }
+end.parse!
+
+Passe::CLI.run(options, *ARGV)
