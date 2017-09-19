@@ -1,75 +1,66 @@
 module Passe
   class Generator
-    def initialize(seed, options = {})
-      @seed = @input = seed
-      @opts = Passe::OptionParser.new(options).parse!
+    attr_accessor :options
+
+    def self.create_key_file(key, path, options = {})
+      passe = self.new(key, options)
+      FileUtils.mkdir_p(File.dirname(path))
+      File.open(path, "w") do |f|
+        f.print "-" * 20 + " BEGIN PASSE KEY " + "-" * 23 + "\n"
+        f.print passe.run
+        f.print "-" * 20 + " END PASSE KEY " + "-" * 25
+      end
     end
 
-    def reset!
-      @seed = @input
-    end
+    def initialize(secret = nil, options = {})
+      @secret = secret.to_s.strip.sha512
 
-    def hash
-      index = @seed[0].to_i(16) % @opts[:algorithms].length
-      @seed = Digest.const_get(@opts[:algorithms][index]).hexdigest(@seed)
-    rescue NameError
-      @seed = Digest::SHA256.hexdigest(@seed)
-    end
-
-    def shuffle(arr)
-      arr = arr.chars if arr.is_a?(String)
-      base = 16 + hash.gsub(/[^0-9]/, '').to_i % 21
-      arr.shuffle(:random => Random.new(hash.to_i(base)))
-    end
-
-    def generate_space(chars)
-      space  = shuffle(chars)
-      space += shuffle(space) while space.length <= @opts[:max_ord]
-      space
+      @options = { "charset" => Passe::CHARSET }.merge(options)
+      @options.merge!("size" => Passe::GRID_SIZE,
+        "numeric" => Passe::NUMERIC_GRID, "alpha" => Passe::ALPHA_GRID)
     end
 
     def run
-      reset!
-      charspace    = self.generate_space(@opts[:charspace])
-      numspace     = self.generate_space((0..9).to_a)
-      total_rows   = @opts[:rows].length
-      numeric_rows = (total_rows * (@opts[:numrows] / 100.0)).to_i
+      return encrypt_options! if options['grid']
 
-      @opts[:rows].map.with_index do |r, idx|
-        @opts[:cols].map do |c|
-          space = idx < total_rows - numeric_rows ? charspace : numspace
-          shuffle(space)[(r.ord + c.ord) % space.length]
+      charspace  = options['charset'].chars.shuffle
+      numspace   = options['charset'].gsub(/[^0-9]+/, '').chars.shuffle
+      alphaspace = options['charset'].gsub(/[^a-z0-9]+/i, '').chars.shuffle
+
+      numspace   = (0..9).to_a.shuffle if numspace.empty?
+      alphaspace = (('a'..'z').to_a+('A'..'Z').to_a).shuffle if alphaspace.empty?
+
+      @options['grid'] = @options['size'][0].times.map do |r|
+        @options['size'][1].times.map do |c|
+          get_character(r, c, alphaspace, numspace, charspace)
         end
-      end
+      end.join
+
+      encrypt_options!
     end
 
-    def to_s
-      output = self.run
-      @opts[:concise] ? to_concise_str(output) : to_expanded_str(output)
+    def get_character(r, c, alphaspace, numspace, charspace)
+      space = alphanumeric?(r,c) ? alphaspace : charspace
+      space = numeric?(r,c) ? numspace : space
+      space.shuffle[(r + c) % space.length]
     end
 
-    private
-
-    def to_expanded_str(output)
-      str  = "    " + @opts[:cols].join(" ") + "\n"
-      str += "    " + "- " * @opts[:cols].length + "\n"
-
-      @opts[:rows].length.times.map do |i|
-        str += @opts[:rows][i] + " | " + output[i].join(" ") + "\n"
-      end
-
-      str
+    def numeric?(r, c)
+      return false if r >= @options["numeric"][0]
+      return false if c >= @options["numeric"][1]
+      return true
     end
 
-    def to_concise_str(output)
-      str  = "  " + @opts[:cols].join("") + "\n"
-      str += "  " + "-" * @opts[:cols].length + "\n"
+    def alphanumeric?(r, c)
+      return false if r < @options["size"][0] - @options["alpha"][0]
+      return false if c < @options["size"][1] - @options["alpha"][1]
+      return true
+    end
 
-      @opts[:rows].length.times.map do |i|
-        str += @opts[:rows][i] + "|" + output[i].join + "\n"
-      end
+    protected
 
-      str
+    def encrypt_options!
+      Passe.encrypt!(@secret, @options.to_h)
     end
   end
 end
