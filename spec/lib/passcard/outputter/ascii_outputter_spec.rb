@@ -1,15 +1,15 @@
-RSpec.describe Passe::AsciiOutputter do
-  let(:generator){ Passe::Generator.new("secret-word") }
-  let(:reader)   { Passe::Reader.new("secret-word", generator.run)}
+RSpec.describe Passcard::AsciiOutputter do
+  let(:generator){ Passcard::Generator.new("secret-word") }
+  let(:reader)   { Passcard::Reader.new("secret-word", generator.run)}
   let(:subject)  { described_class.new(reader) }
 
-  it "is a subclass of Passe::Outputter" do
-    expect(described_class.superclass).to eq Passe::Outputter
+  it "is a subclass of Passcard::Outputter" do
+    expect(described_class.superclass).to eq Passcard::Outputter
   end
 
-  it "registers #to_s and #to_ascii methods to Passe::Reader" do
-    expect(Passe.outputters[:to_s]).to eq [described_class, :to_ascii]
-    expect(Passe.outputters[:to_ascii]).to eq [described_class, :to_ascii]
+  it "registers #to_s and #to_ascii methods to Passcard::Reader" do
+    expect(Passcard.outputters[:to_s]).to eq [described_class, :to_ascii]
+    expect(Passcard.outputters[:to_ascii]).to eq [described_class, :to_ascii]
 
     double = double()
     expect(described_class).to receive(:new).twice.and_return(double)
@@ -57,7 +57,7 @@ RSpec.describe Passe::AsciiOutputter do
       output = reader.to_ascii
       output.lines.each{ |line| expect(line).not_to match regex }
 
-      output = reader.to_ascii(color: :passe)
+      output = reader.to_ascii(color: :passcard)
       output.lines.each.with_index do |line, idx|
         expect(line).to match regex
         expect(line).to include(reader.grid[idx].to_s)

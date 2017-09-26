@@ -1,12 +1,12 @@
-RSpec.describe Passe::Grid do
+RSpec.describe Passcard::Grid do
   let(:arr1) {['ABCDE', 'FGHIJ', 'KLMNO', 'PQRST', 'UVWXY'].map(&:chars)}
   let(:arr2) {['AFKPU', 'BGLQV', 'CHMRW', 'DINSX', 'EJOTY'].map(&:chars)}
   let(:grid1){ described_class.new(arr1) }
   let(:grid2){ described_class.new(arr2) }
 
   describe "#rows_at" do
-    it "returns an instance of Passe::Grid" do
-      expect(grid1.rows_at(0)).to be_a_passe_grid.with_size(1,5)
+    it "returns an instance of Passcard::Grid" do
+      expect(grid1.rows_at(0)).to be_a_passcard_grid.with_size(1,5)
     end
 
     it "returns rows at particular indices" do
@@ -52,8 +52,8 @@ RSpec.describe Passe::Grid do
   end
 
   describe "#cols_at" do
-    it "returns an instance of Passe::Grid" do
-      expect(grid2.cols_at(0)).to be_a_passe_grid.with_size(5,1)
+    it "returns an instance of Passcard::Grid" do
+      expect(grid2.cols_at(0)).to be_a_passcard_grid.with_size(5,1)
     end
 
     it "returns columns at particular indices" do
@@ -96,23 +96,23 @@ RSpec.describe Passe::Grid do
 
   describe "#at" do
     it "delegates to methods: #rows_at, #cols_at" do
-      expect_any_instance_of(Passe::Grid).to receive(:cols_at).once.and_call_original
-      expect_any_instance_of(Passe::Grid).to receive(:rows_at).once.and_call_original
+      expect_any_instance_of(Passcard::Grid).to receive(:cols_at).once.and_call_original
+      expect_any_instance_of(Passcard::Grid).to receive(:rows_at).once.and_call_original
       expect(grid1.at(rows: [1, 2], cols:[3, 4]).to_str).to eq "IJNO"
     end
 
     it "returns the complete row/column when corresp. column/row indices are empty" do
-      expect_any_instance_of(Passe::Grid).to receive(:rows_at).twice.and_call_original
+      expect_any_instance_of(Passcard::Grid).to receive(:rows_at).twice.and_call_original
       expect(grid1.at(rows: [1, 2]).to_str).to eq "FGHIJKLMNO"
       expect(grid1.at(rows: [1, 2], cols: []).to_str).to eq "FGHIJKLMNO"
-      expect_any_instance_of(Passe::Grid).to receive(:cols_at).twice.and_call_original
+      expect_any_instance_of(Passcard::Grid).to receive(:cols_at).twice.and_call_original
       expect(grid1.at(cols: [1,-3]).to_str).to eq "BCGHLMQRVW"
       expect(grid1.at(cols: [1,-3], rows: []).to_str).to eq "BCGHLMQRVW"
     end
 
     it "returns itself (main grid) with empty indices" do
-      expect_any_instance_of(Passe::Grid).not_to receive(:cols_at)
-      expect_any_instance_of(Passe::Grid).not_to receive(:rows_at)
+      expect_any_instance_of(Passcard::Grid).not_to receive(:cols_at)
+      expect_any_instance_of(Passcard::Grid).not_to receive(:rows_at)
       expect(grid1.at(rows: [], cols: [])).to eq grid1
     end
   end
@@ -120,18 +120,18 @@ RSpec.describe Passe::Grid do
   describe "#slice" do
     it "allows getting subgrid from a given coordinate to another" do
       subgrid = grid1.slice([0,0], [5,5])
-      expect(subgrid).to be_a_passe_grid.with_size(5, 5)
+      expect(subgrid).to be_a_passcard_grid.with_size(5, 5)
 
       subgrid = grid1.slice([-130, -143], [-123, -128])
-      expect(subgrid).to be_a_passe_grid.with_size(7, 15)
+      expect(subgrid).to be_a_passcard_grid.with_size(7, 15)
 
       subgrid = grid1.slice([-123, -128], [-130, -143])
-      expect(subgrid).to be_a_passe_grid.with_size(0, 0)
+      expect(subgrid).to be_a_passcard_grid.with_size(0, 0)
     end
 
     it "delegates to methods: #rows_at, #cols_at" do
-      expect_any_instance_of(Passe::Grid).to receive(:rows_at).once.and_call_original
-      expect_any_instance_of(Passe::Grid).to receive(:cols_at).once.and_call_original
+      expect_any_instance_of(Passcard::Grid).to receive(:rows_at).once.and_call_original
+      expect_any_instance_of(Passcard::Grid).to receive(:cols_at).once.and_call_original
       expect(grid1.slice([15,15], [20,20]).size).to eq [5,5]
     end
   end
@@ -165,28 +165,28 @@ RSpec.describe Passe::Grid do
 
   describe "#numeric?" do
     it "checks if a grid comprises of numbers only" do
-      expect(Passe::Grid.new([])).not_to be_numeric
-      expect(Passe::Grid.new([[0,1], [3,4]])).to be_numeric
-      expect(Passe::Grid.new([[0,1], ["A",4]])).not_to be_numeric
+      expect(Passcard::Grid.new([])).not_to be_numeric
+      expect(Passcard::Grid.new([[0,1], [3,4]])).to be_numeric
+      expect(Passcard::Grid.new([[0,1], ["A",4]])).not_to be_numeric
     end
   end
 
   describe "#alphanumeric?" do
     it "checks if a grid comprises of numbers and alphabets only" do
-      expect(Passe::Grid.new([])).not_to be_alphanumeric
-      expect(Passe::Grid.new([[0,1], [3,4]])).to be_alphanumeric
-      expect(Passe::Grid.new([[0,1], ["A",4]])).to be_alphanumeric
-      expect(Passe::Grid.new([["A","B"], ["C","D"]])).to be_alphanumeric
-      expect(Passe::Grid.new([["A","!"], ["C","D"]])).not_to be_alphanumeric
+      expect(Passcard::Grid.new([])).not_to be_alphanumeric
+      expect(Passcard::Grid.new([[0,1], [3,4]])).to be_alphanumeric
+      expect(Passcard::Grid.new([[0,1], ["A",4]])).to be_alphanumeric
+      expect(Passcard::Grid.new([["A","B"], ["C","D"]])).to be_alphanumeric
+      expect(Passcard::Grid.new([["A","!"], ["C","D"]])).not_to be_alphanumeric
     end
   end
 
   describe "#numeric?" do
     it "checks if a grid comprises of numbers only" do
-      expect(Passe::Grid.new([])).not_to have_symbols
-      expect(Passe::Grid.new([[0,1],["A", "!"]])).to have_symbols
-      expect(Passe::Grid.new([[0,1],[2, 3]])).not_to have_symbols
-      expect(Passe::Grid.new([[0,1],["A", "B"]])).not_to have_symbols
+      expect(Passcard::Grid.new([])).not_to have_symbols
+      expect(Passcard::Grid.new([[0,1],["A", "!"]])).to have_symbols
+      expect(Passcard::Grid.new([[0,1],[2, 3]])).not_to have_symbols
+      expect(Passcard::Grid.new([[0,1],["A", "B"]])).not_to have_symbols
     end
   end
 
@@ -220,14 +220,14 @@ RSpec.describe Passe::Grid do
     end
 
     it "has an #inspect method for viewing information about the grid easily" do
-      expect(Passe::Grid.new([]).inspect).to eq 'Passe::Grid[rows=0,cols=0,length=0]{""}'
+      expect(Passcard::Grid.new([]).inspect).to eq 'Passcard::Grid[rows=0,cols=0,length=0]{""}'
 
-      str = "Passe::Grid[rows=5,cols=5,length=25]{\"#{('A'..'Y').to_a.join}\"}"
+      str = "Passcard::Grid[rows=5,cols=5,length=25]{\"#{('A'..'Y').to_a.join}\"}"
       expect(grid1.inspect).to eq str
 
-      mgrid = Passe::Grid.new([(0..9).to_a]*10)
+      mgrid = Passcard::Grid.new([(0..9).to_a]*10)
       chars = "0123456789012345678901234567890123456...."
-      str   = "Passe::Grid[rows=10,cols=10,length=100]{\"#{chars}\"}"
+      str   = "Passcard::Grid[rows=10,cols=10,length=100]{\"#{chars}\"}"
       expect(mgrid.inspect).to eq str
     end
   end
@@ -246,7 +246,7 @@ RSpec.describe Passe::Grid do
       [[0,1], [0,1,2]], [[0,1], 0, 1], [[0,1], [1,11]],
       [['AB', 'A'], ['C', 'B']] ]
 
-    valid.each{|arr| expect{ Passe::Grid.new(arr) }.not_to raise_error}
-    invalid.each{|arr| expect{ Passe::Grid.new(arr) }.to raise_error(Passe::Error)}
+    valid.each{|arr| expect{ Passcard::Grid.new(arr) }.not_to raise_error}
+    invalid.each{|arr| expect{ Passcard::Grid.new(arr) }.to raise_error(Passcard::Error)}
   end
 end

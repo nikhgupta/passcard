@@ -1,4 +1,4 @@
-module Passe
+module Passcard
   class Palette
     extend Forwardable
     GOLDEN_RATIO = (1 + Math.sqrt(5))/2
@@ -6,16 +6,16 @@ module Passe
     attr_reader :type, :colors, :options
     def_delegators :@colors, :count, :size, :take, :first, :last, :[]
 
-    def initialize(type = :passe, options = {})
+    def initialize(type = :passcard, options = {})
       self.type    = type
       self.options = options
     end
 
     def type=(type)
-      @type = type.to_s.strip.empty? ? :passe : type.to_sym
+      @type = type.to_s.strip.empty? ? :passcard : type.to_sym
 
       if !respond_to?("generate_colors_#{@type}", true)
-        raise Passe::Error, "No such color generator: #{@type}"
+        raise Passcard::Error, "No such color generator: #{@type}"
       end
 
       update_colors
@@ -78,7 +78,7 @@ module Passe
       end
     end
 
-    def generate_colors_passe(options = {})
+    def generate_colors_passcard(options = {})
       h = (360 * rand).round(2)
       n = options['n']
       smax = options.fetch('smax', 0.4)

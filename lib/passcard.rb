@@ -3,7 +3,7 @@ require "base64"
 require "openssl"
 require "ostruct"
 
-module Passe
+module Passcard
   GRID_SIZE    = [80, 80]
   ALPHA_GRID   = [40, 40]
   NUMERIC_GRID = [20, 20]
@@ -51,19 +51,19 @@ module Passe
   end
 
   def self.create!(*args)
-    Passe::Generator.create_key_file(*args)
+    Passcard::Generator.create_key_file(*args)
   end
 
   def self.read!(*args)
-    Passe::Reader.read_key_file(*args)
+    Passcard::Reader.read_key_file(*args)
   end
 end
 
-Dir.glob(Passe.root.join("lib", "extensions", "*.rb")){|f| require f}
-require "passe/version"
-require "passe/grid"
-require "passe/generator"
-require "passe/reader"
-require "passe/palette"
-require "passe/outputter"
-require "passe/outputter/ascii_outputter"
+Dir.glob(Passcard.root.join("lib", "extensions", "*.rb")){|f| require f}
+require "passcard/version"
+require "passcard/grid"
+require "passcard/generator"
+require "passcard/reader"
+require "passcard/palette"
+require "passcard/outputter"
+require "passcard/outputter/ascii_outputter"

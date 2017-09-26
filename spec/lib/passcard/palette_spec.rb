@@ -1,16 +1,16 @@
 # Tests for this class are minimal at the moment, as this class is just a visual
-# glue and maybe removed in the future from Passe.
+# glue and maybe removed in the future from Passcard.
 #
-RSpec.describe Passe::Palette do
-  let(:subject){ described_class.new(:passe, "n" => 5) }
+RSpec.describe Passcard::Palette do
+  let(:subject){ described_class.new(:passcard, "n" => 5) }
 
   it "raises error when the palette type can not be found" do
-    expect { described_class.new(:unknown_type) }.to raise_error Passe::Error
-    expect { described_class.new(:passe) }.not_to raise_error
+    expect { described_class.new(:unknown_type) }.to raise_error Passcard::Error
+    expect { described_class.new(:passcard) }.not_to raise_error
   end
 
-  it "uses `passe` as the default palette type" do
-    expect(described_class.new.type).to eq :passe
+  it "uses `passcard` as the default palette type" do
+    expect(described_class.new.type).to eq :passcard
   end
 
   it "allows easy access to the generated colors" do
@@ -56,12 +56,12 @@ RSpec.describe Passe::Palette do
   end
 
   it "provides a list of available palette types" do
-    expect(subject.list_types).to include(:krazydad, :gradient, :passe, :martin_ankerl)
+    expect(subject.list_types).to include(:krazydad, :gradient, :passcard, :martin_ankerl)
   end
 
   # FIXME: not the correct way to test this
   it "generates different colors for each palette type" do
-    palettes = [:passe, :gradient, :martin_ankerl, :krazydad]
+    palettes = [:passcard, :gradient, :martin_ankerl, :krazydad]
     colors = palettes.map do |palette|
       subject.type = palette
       subject.colors.map{|color| color[:color]}

@@ -1,9 +1,9 @@
 require 'nokogiri'
-require 'passe/outputter/html_outputter'
+require 'passcard/outputter/html_outputter'
 
-RSpec.describe Passe::HtmlOutputter do
-  let(:generator){ Passe::Generator.new("secret-word") }
-  let(:reader)   { Passe::Reader.new("secret-word", generator.run)}
+RSpec.describe Passcard::HtmlOutputter do
+  let(:generator){ Passcard::Generator.new("secret-word") }
+  let(:reader)   { Passcard::Reader.new("secret-word", generator.run)}
   let(:subject)  { described_class.new(reader) }
 
   def html_doc(options = {})
@@ -16,23 +16,23 @@ RSpec.describe Passe::HtmlOutputter do
   end
 
   def span_count(html, selector=nil)
-    html.search(".passe-grid #{selector} span").count
+    html.search(".passcard-grid #{selector} span").count
   end
 
   def span_content(html, selector=nil)
-    html.search(".passe-grid #{selector} span").map(&:text).join
+    html.search(".passcard-grid #{selector} span").map(&:text).join
   end
 
   def body_style(html)
     html.search("body").attr("style").text.strip
   end
 
-  it "is a subclass of Passe::Outputter" do
-    expect(described_class.superclass).to eq Passe::Outputter
+  it "is a subclass of Passcard::Outputter" do
+    expect(described_class.superclass).to eq Passcard::Outputter
   end
 
-  it "registers #to_html method to Passe::Reader" do
-    expect(Passe.outputters[:to_html]).to eq [described_class, :to_html]
+  it "registers #to_html method to Passcard::Reader" do
+    expect(Passcard.outputters[:to_html]).to eq [described_class, :to_html]
 
     double = double()
     expect(described_class).to receive(:new).and_return(double)
@@ -46,7 +46,7 @@ RSpec.describe Passe::HtmlOutputter do
     it "converts grid to HtML string" do
       html = html_doc()
       expect(span_count(html)).to eq 6400
-      expect(text_for(html, "head title")).to eq "Passe Grid"
+      expect(text_for(html, "head title")).to eq "Passcard Grid"
 
       regex = /span\s+\{.*display:\s*inline-block/mi
       expect(text_for(html, "head style")).to match(regex)

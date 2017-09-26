@@ -1,4 +1,4 @@
-module Passe
+module Passcard
   class AsciiOutputter < Outputter
     register :to_ascii, to_s: :to_ascii
 

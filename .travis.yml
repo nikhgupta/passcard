@@ -9,7 +9,7 @@ deploy:
   provider: rubygems
   api_key:
     secure: KTUGDjcaqzvT8MV3T2TVMekZTI7jm0dRW3RCgDyFJ3kgO9MBiceBbbCInc+RXJKeQHvnrnCnTZ0iEEB/+8lOhM47d3CEqTeOPq+OfL2mXQ5GsLFO8udxG353b4HonqicLhf94i//8Q9EzFniGWBGWr2qQcZUrcRPvQ5MgH25UtwAtdqXpjF/l/rtEoNt8f5YMagzUlQOs9419Zl/u+H29ghNLyIpGdvMqe7k177wlHRAKzGZ1qzL1FR2KTAg7kFDwQSUK8Gt5fYJheyaA/I13dgMpkJUCbaOm7WKvTTLtwKXBIL6aS3P8HHXo5zpVn+Sma5UAcQ7wfw5Z9C+Nqg9sAJUZ77yHKZAYkMcvaJRAhdGEDZ5Q8Y0ZFcvd3UmEu/17WQPy+w4BVqLmvWKlV9j4yCZnRJdlMol5wPsOGcJTgd0aI1dhJMbo4rN0jberg4FV8WKImSphxJ54sTyQkGbr7q+7eigebS+PEm+fBCS4MiTeDrA0gLgvsRGso447R3RlpBCnEdJAXyRL1ij6Gwfra1uhdlIgO4zJNjcofCg3/QQpazfUGrO6XjUYahHE/y7bCY84+1T6DX8oqNWvDJgYVlwBfTNO2E0GVD7EDrGHlM4At4H5Drxs+7mjvompWHYtJKCMBXZWAODySguW9rI1C+bsc+vnmloacF6cPegbdI=
-  gem: passe
+  gem: passcard
   on:
     tags: true
-    repo: nikhgupta/passe
+    repo: nikhgupta/passcard

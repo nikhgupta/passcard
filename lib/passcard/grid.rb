@@ -1,6 +1,6 @@
 require 'forwardable'
 
-module Passe
+module Passcard
   class Grid
     extend Forwardable
     def_delegators :to_str, :chars, :gsub
@@ -115,7 +115,7 @@ module Passe
       valid   = @arr.is_a?(Array)
       valid &&= @arr.reject{|r| r.is_a?(Array)}.empty?
       valid &&= @arr.join.length == @arr.size * (@arr[0].size rescue 0)
-      raise Passe::Error, "A Grid requires 2D array" unless valid
+      raise Passcard::Error, "A Grid requires 2D array" unless valid
     end
   end
 end

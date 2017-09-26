@@ -1,6 +1,6 @@
 require 'forwardable'
 
-module Passe
+module Passcard
   class Reader
     extend Forwardable
     def_delegators :to_hash, :[], :has_key?
@@ -14,7 +14,7 @@ module Passe
 
     def initialize(key, enc_text)
       secret, enc_text = key.sha512, enc_text
-      @opts = Passe.decrypt!(secret, enc_text)
+      @opts = Passcard.decrypt!(secret, enc_text)
       get_grid
     end
 
@@ -22,7 +22,7 @@ module Passe
       return @grid if @grid
       @grid = @opts.delete("grid")
       @grid = @grid.chars.each_slice(@opts["size"][1]).to_a
-      @grid = Passe::Grid.new(@grid)
+      @grid = Passcard::Grid.new(@grid)
     end
 
     def numeric_grid
@@ -37,7 +37,7 @@ module Passe
 
     # Should be taken from all corners rather than the first:
     def random_grid(rows = 10, cols = 10)
-      return Passe::Grid.new([]) if rows * cols == 0
+      return Passcard::Grid.new([]) if rows * cols == 0
       return @grid if rows * cols >= @grid.length
 
       ir = rand(@opts["size"][0] - rows - 1).to_i
@@ -50,14 +50,14 @@ module Passe
     end
 
     def to_s(*a, &b)
-      return @grid.to_s unless Passe.outputters.has_key?(:to_s)
-      klass, method = Passe.outputters[:to_s]
+      return @grid.to_s unless Passcard.outputters.has_key?(:to_s)
+      klass, method = Passcard.outputters[:to_s]
       klass.new(self).send(method, *a, &b) || @grid.to_s
     end
 
     def method_missing(m, *a, &b)
-      if Passe.outputters.include?(m)
-        klass, method_name = Passe.outputters[m]
+      if Passcard.outputters.include?(m)
+        klass, method_name = Passcard.outputters[m]
         klass.new(self).send(method_name, *a, &b)
       elsif @grid.respond_to?(m)
         @grid.send(m, *a, &b)

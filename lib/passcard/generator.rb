@@ -1,23 +1,23 @@
-module Passe
+module Passcard
   class Generator
     attr_accessor :options
 
     def self.create_key_file(key, path, options = {})
-      passe = self.new(key, options)
+      passcard = self.new(key, options)
       FileUtils.mkdir_p(File.dirname(path))
       File.open(path, "w") do |f|
-        f.print "-" * 20 + " BEGIN PASSE KEY " + "-" * 23 + "\n"
-        f.print passe.run
-        f.print "-" * 20 + " END PASSE KEY " + "-" * 25
+        f.print "-" * 20 + " BEGIN PASSCARD KEY " + "-" * 23 + "\n"
+        f.print passcard.run
+        f.print "-" * 20 + " END PASSCARD KEY " + "-" * 25
       end
     end
 
     def initialize(secret = nil, options = {})
       @secret = secret.to_s.strip.sha512
 
-      @options = { "charset" => Passe::CHARSET }.merge(options)
-      @options.merge!("size" => Passe::GRID_SIZE,
-        "numeric" => Passe::NUMERIC_GRID, "alpha" => Passe::ALPHA_GRID)
+      @options = { "charset" => Passcard::CHARSET }.merge(options)
+      @options.merge!("size" => Passcard::GRID_SIZE,
+        "numeric" => Passcard::NUMERIC_GRID, "alpha" => Passcard::ALPHA_GRID)
     end
 
     def run
@@ -60,7 +60,7 @@ module Passe
     protected
 
     def encrypt_options!
-      Passe.encrypt!(@secret, @options.to_h)
+      Passcard.encrypt!(@secret, @options.to_h)
     end
   end
 end

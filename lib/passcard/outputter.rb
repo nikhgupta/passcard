@@ -1,4 +1,4 @@
-module Passe
+module Passcard
   class Outputter
     HEADERS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ 0123456789 αβγδθλμπϕ $£¥€¢' + # 50
       '! # % & * < = > ? @ ✓ ∞ ♬ ♡ ♢ ♤ ♧ ☯ ☾ ✈ ☎ ☀ ☁ ☂ ☃ ★ ⌘ ♞  ✂ ✎ '   # 30
@@ -7,20 +7,20 @@ module Passe
 
     def initialize(reader)
       self.reader = reader
-      self.palette = Passe::Palette.new
+      self.palette = Passcard::Palette.new
     end
 
     # Register one or more handler methods with this outputter.
-    # Passe will then be able to use these methods to get the output
+    # Passcard will then be able to use these methods to get the output
     # from the outputter. For example, if you have an HtmlOutputter,
     # you could do:
     #
     #   register :to_html, :to_xml
     #
-    # You could then do a Passe.to_png and get the result of that method.
+    # You could then do a Passcard.to_png and get the result of that method.
     # The class which registers the method will receive the generator instance
     # as the only argument, and the default implementation of initialize puts
-    # that into the +passe+ accessor.
+    # that into the +passcard+ accessor.
     #
     # You can also have different method names in the outputter by providing
     # a hash:
@@ -29,10 +29,10 @@ module Passe
     #
     def self.register(*args)
       hash = args.last.is_a?(Hash) ? args.pop : {}
-      raise Passe::Error, "You must register a method name!" if args.empty? && hash.empty?
+      raise Passcard::Error, "You must register a method name!" if args.empty? && hash.empty?
       args.each{|name| hash[name] = name}
       hash.each do |name, method_name|
-        ::Passe.register_outputter(name, self, method_name)
+        ::Passcard.register_outputter(name, self, method_name)
       end
     end
 
@@ -59,7 +59,7 @@ module Passe
       coordinates = get_grid_coordinates(options)
       @grid = reader.random_grid(20, 30) if  random
       @grid = reader.slice(*coordinates) if !random
-      use_palette :passe
+      use_palette :passcard
       @grid
     end
 

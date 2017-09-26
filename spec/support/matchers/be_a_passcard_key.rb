@@ -1,5 +1,5 @@
 module RSpec::Matchers
-  class BeAPasseKey
+  class BeAPasscardKey
     include RSpec::Matchers
 
     def with_secret(key)
@@ -20,9 +20,9 @@ module RSpec::Matchers
     def does_not_match?(file)
       file = "tmp/aruba/#{file}"
       data = File.readlines(file)
-      expect(data[ 0]).not_to match(/-+ BEGIN PASSE KEY -+/)
-      expect(data[-1]).not_to match(/-+ END PASSE KEY -+/)
-      expect{ Passe.read!(@key, file) }.to raise_error(*@error)
+      expect(data[ 0]).not_to match(/-+ BEGIN PASSCARD KEY -+/)
+      expect(data[-1]).not_to match(/-+ END PASSCARD KEY -+/)
+      expect{ Passcard.read!(@key, file) }.to raise_error(*@error)
       return true
     end
 
@@ -30,7 +30,7 @@ module RSpec::Matchers
       raise 'No secret key provided' if @key.nil?
 
       file = "tmp/aruba/#{file}"
-      @reader = Passe.read!(@key, file)
+      @reader = Passcard.read!(@key, file)
 
       has_size_information?
       has_no_private_information?
@@ -45,15 +45,15 @@ module RSpec::Matchers
     end
 
     def failure_message
-      "Expected '#{@file}' to be a Passe key with secret: #{@key}"
+      "Expected '#{@file}' to be a Passcard key with secret: #{@key}"
     end
 
     def failure_message_when_negated
-      "Expected '#{@file}' not to be a Passe key"
+      "Expected '#{@file}' not to be a Passcard key"
     end
 
     def description
-      "'#{@file}' should be a Passe key with secret: #{@key}"
+      "'#{@file}' should be a Passcard key with secret: #{@key}"
     end
 
     private
@@ -71,17 +71,17 @@ module RSpec::Matchers
     end
 
     def has_grid?
-      expect(@reader.grid).to be_a_passe_grid.with_size(@reader.opts['size'])
+      expect(@reader.grid).to be_a_passcard_grid.with_size(@reader.opts['size'])
       expect(@reader.grid.to_str).to match(/\A[!-~]+\z/)
     end
 
     def has_numeric_grid?
-      expect(@reader.numeric_grid).to be_a_passe_grid.with_size(@reader.opts['numeric'])
+      expect(@reader.numeric_grid).to be_a_passcard_grid.with_size(@reader.opts['numeric'])
       expect(@reader.numeric_grid.to_str).to match(/\A[0-9]+\z/)
     end
 
     def has_alphanumeric_grid?
-      expect(@reader.alpha_grid).to be_a_passe_grid.with_size(@reader.opts['alpha'])
+      expect(@reader.alpha_grid).to be_a_passcard_grid.with_size(@reader.opts['alpha'])
       expect(@reader.alpha_grid.to_str).to match(/\A[a-z0-9]+\z/i)
     end
 
@@ -95,7 +95,7 @@ module RSpec::Matchers
     end
   end
 
-  def be_a_passe_key
-    BeAPasseKey.new
+  def be_a_passcard_key
+    BeAPasscardKey.new
   end
 end

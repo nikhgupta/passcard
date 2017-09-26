@@ -1,0 +1,21 @@
+#!/usr/bin/env ruby
+
+require "thor"
+require "passcard"
+require "passcard/cli"
+require 'passcard/outputter/ascii_outputter'
+
+pattern = Passcard.root.join("lib", "passcard", "outputter", "*.rb")
+Dir.glob(pattern){|f| require "passcard/outputter/#{File.basename(f, '.rb')}"}
+
+# version = "Passcard v#{Passcard::VERSION} - Generate password grids with ease."
+begin
+  Passcard::CLI.start(ARGV)
+rescue Passcard::Error => e
+  STDERR.puts "\x1b[31m[Passcard] Error: #{e.message}\x1b[0m"
+  exit 1
+rescue StandardError => e
+  STDERR.puts "\x1b[31m[#{e.class}] FATAL: #{e.message}\x1b[0m"
+  STDERR.puts e.backtrace.join("\n  ")
+  exit 2
+end

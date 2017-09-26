@@ -1,17 +1,17 @@
 # coding: utf-8
 lib = File.expand_path("../lib", __FILE__)
 $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
-require "passe/version"
+require "passcard/version"
 
 Gem::Specification.new do |spec|
-  spec.name          = "passe"
-  spec.version       = Passe::VERSION
+  spec.name          = "passcard"
+  spec.version       = Passcard::VERSION
   spec.authors       = ["Nikhil Gupta"]
   spec.email         = ["me@nikhgupta.com"]
 
   spec.summary       = %q{Password Card Generator}
   spec.description   = %q{Password Card Generator}
-  spec.homepage      = "https://github.com/nikhgupta/passe"
+  spec.homepage      = "https://github.com/nikhgupta/passcard"
   spec.license       = "MIT"
 
   spec.files         = `git ls-files -z`.split("\x0").reject do |f|

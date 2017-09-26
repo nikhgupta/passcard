@@ -1,4 +1,4 @@
-module Passe
+module Passcard
   module ArubaHelpers
     SECRET = "secret-word"
 

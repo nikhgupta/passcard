@@ -1,4 +1,4 @@
-module Passe
+module Passcard
   class HtmlOutputter < Outputter
     register :to_html
 
@@ -68,7 +68,7 @@ __END__
 <html>
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-    <title> Passe Grid </title>
+    <title> Passcard Grid </title>
 
     <style type="text/css">
       * {
@@ -82,7 +82,7 @@ __END__
         color: white;
         background-color: #666;
       }
-      .passe-grid {
+      .passcard-grid {
         width: 800px;
         text-align: right;
       }
@@ -120,7 +120,7 @@ __END__
     </style>
   </head>
   <body style='{{BACKGROUND}}'>
-    <div class="passe-grid">
+    <div class="passcard-grid">
       {{GRID}}
     </div>
   </body>

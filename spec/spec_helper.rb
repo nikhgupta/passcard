@@ -2,13 +2,13 @@ require 'simplecov'
 
 require "bundler/setup"
 require 'aruba/rspec'
-require "passe"
+require "passcard"
 
-Dir.glob(Passe.root.join("spec", "support", "**", "*.rb")).each{|f| require f}
+Dir.glob(Passcard.root.join("spec", "support", "**", "*.rb")).each{|f| require f}
 
 RSpec.configure do |config|
-  config.include Passe::TestHelpers
-  config.include Passe::ArubaHelpers, type: :aruba
+  config.include Passcard::TestHelpers
+  config.include Passcard::ArubaHelpers, type: :aruba
 
   # Enable flags like --only-failures and --next-failure
   config.example_status_persistence_file_path = ".rspec_status"
