@@ -5,6 +5,7 @@
 - [x] Run tests on Travis
 - [ ] Update README
 - [ ] Push to Rubygems
+- [ ] Add status icons to README
 
 ## Welcome
 
